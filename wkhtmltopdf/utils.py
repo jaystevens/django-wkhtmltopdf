@@ -130,6 +130,11 @@ def wkhtmltopdf(pages, output=None, **kwargs):
                          _options_to_args(**options),
                          list(pages),
                          [output]))
+    # Windows Path fix
+    if sys.platform.startswith('win'):
+        ck_args.pop(0)  # remove fubar cmd
+        ck_args.insert(0, cmd)  # add original cmd
+
     ck_kwargs = {'env': env}
     # Handling of fileno() attr. based on https://github.com/GrahamDumpleton/mod_wsgi/issues/85
     try:
