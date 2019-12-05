@@ -21,7 +21,8 @@ import django
 from django.conf import settings
 from django.template import loader
 from django.template.context import Context, RequestContext
-from django.utils import six
+# from django.utils import six  # Django 3.0 drops django.utils.six
+import six
 
 from .subprocess import check_output
 
