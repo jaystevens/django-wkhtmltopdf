@@ -10,7 +10,7 @@ from django.template import loader, RequestContext
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.test.client import RequestFactory
-from django.utils import six
+import six
 from django.utils.encoding import smart_str
 
 from wkhtmltopdf.subprocess import CalledProcessError
