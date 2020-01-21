@@ -37,7 +37,6 @@ NO_ARGUMENT_OPTIONS = ['--collate', '--no-collate', '-H', '--extended-help', '-g
                        '--disable-forms', '--enable-forms', '--images', '--no-images',
                        '--disable-internal-links', '--enable-internal-links', '-n',
                        '--disable-javascript', '--enable-javascript', '--keep-relative-links',
-                       '--load-error-handling', '--load-media-error-handling',
                        '--disable-local-file-access', '--enable-local-file-access',
                        '--exclude-from-outline', '--include-in-outline', '--disable-plugins',
                        '--enable-plugins', '--print-media-type', '--no-print-media-type',
@@ -302,13 +301,14 @@ def make_absolute_paths(content):
         if not x['root'].endswith('/'):
             x['root'] += '/'
 
-        occur_pattern = '''["|']({0}.*?)["|']'''
+        occur_pattern = '''(["|']{0}.*?["|'])'''
         occurences = re.findall(occur_pattern.format(x['url']), content)
         occurences = list(set(occurences))  # Remove dups
         for occur in occurences:
-            content = content.replace(occur,
+            content = content.replace(occur, '"%s"' % (
                                       pathname2fileurl(x['root']) +
-                                      occur[len(x['url']):])
+                                      occur[1 + len(x['url']): -1]))
+
 
     return content
 
@@ -316,6 +316,10 @@ def render_to_temporary_file(template, context, request=None, mode='w+b',
                              bufsize=-1, suffix='.html', prefix='tmp',
                              dir=None, delete=True):
     try:
+        render = template.render
+    except AttributeError:
+        content = loader.render_to_string(template, context)
+    else:
         if django.VERSION < (1, 8):
             # If using a version of Django prior to 1.8, ensure ``context`` is an
             # instance of ``Context``
@@ -325,11 +329,9 @@ def render_to_temporary_file(template, context, request=None, mode='w+b',
                 else:
                     context = Context(context)
             # Handle error when ``request`` is None
-            content = template.render(context)
+            content = render(context)
         else:
-            content = template.render(context, request)
-    except AttributeError:
-        content = loader.render_to_string(template, context)
+            content = render(context, request)
     content = smart_text(content)
     content = make_absolute_paths(content)
 

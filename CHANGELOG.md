@@ -1,8 +1,17 @@
 Changelog for django-wkhtmltopdf
 ================================
 
+3.3.0
+--------
+
+* Fix `AttributeError` exception handling to only catch specific `AttributeError`.
+* Fix list `NO_ARGUMENT_OPTIONS`.
+* Add Django 3 support.
+* Add Python 3.6, 3.7 and Django 2 to travis test matrix.
+* Fix `make_absolute_paths` regular expression failure.
+
 3.2.0
-===================
+-----
 
 * Adding support for cover page
 * fix templates without context_processor
