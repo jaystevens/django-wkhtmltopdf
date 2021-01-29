@@ -139,6 +139,10 @@ def wkhtmltopdf(pages, output=None, **kwargs):
         ck_args.pop(0)  # remove fubar cmd
         ck_args.insert(0, cmd)  # add original cmd
 
+    # enable local file access - must be first
+    ck_args.insert(1, '--enable-local-file-access')
+
+
     ck_kwargs = {'env': env}
     # Handling of fileno() attr. based on https://github.com/GrahamDumpleton/mod_wsgi/issues/85
     try:
